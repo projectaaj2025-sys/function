@@ -43,7 +43,7 @@ const plain = html => String(html).replace(/<[^>]+>/g, ' ').replace(/\$+/g, ' ')
 const topicById = id => TOPICS.find(x => x.id === id);
 const C = id => CONTENT[LANG][id];
 const groupName = g => CONTENT[LANG]._groups[g];
-const slotCount = tp => Math.min(14, Math.max(8, GEN[tp.id].length * 2));
+const slotCount = tp => Math.min(18, Math.max(8, GEN[tp.id].length * 2));
 const taskIds = tp => Array.from({ length: slotCount(tp) }, (_, i) => tp.id + '~' + i);
 const allIds = () => TOPICS.flatMap(taskIds);
 const taskCache = new Map();
@@ -141,8 +141,9 @@ function newVariant(cid) {
 
 /* ---------- оболочка ---------- */
 let route = { id: 'home', tab: '' };
+const NAV_HIDE = ['trainer', 'exam', 'progress', 'search', 'settings'];
 const PAGES = ['home', 'handbook', 'trainer', 'exam', 'search', 'ai', 'progress'];
-const PAGE_ICON = { home: 'home', handbook: 'table', trainer: 'target', exam: 'clock', search: 'search', ai: 'bot', progress: 'chart' };
+const PAGE_ICON = { home: 'home', handbook: 'table', trainer: 'target', exam: 'check', search: 'search', ai: 'bot', progress: 'chart' };
 function toast(msg) { const el = $('toast'); el.textContent = msg; el.classList.remove('hidden'); clearTimeout(toast.t); toast.t = setTimeout(() => el.classList.add('hidden'), 3200); }
 function go(id, tab) { const h = '#' + id + (tab ? '/' + tab : ''); if (location.hash === h) render(); else location.hash = h; }
 function setLang(l) { LANG = l; S.settings.lang = l; save(); document.documentElement.lang = l; renderChrome(); render(); }
@@ -155,7 +156,7 @@ function renderChrome() {
   document.title = t('brand') + ' — ' + t('brandSub');
 }
 function renderNav() {
-  $('top-nav').innerHTML = PAGES.map(p => `<a href="#${p}" class="${route.id === p ? 'active' : ''}">${t(p)}</a>`).join('');
+  $('top-nav').innerHTML = PAGES.filter(p => !NAV_HIDE.includes(p)).map(p => `<a href="#${p}" class="${route.id === p ? 'active' : ''}">${t(p)}</a>`).join('');
   const q = $('topic-search').value.trim().toLowerCase();
   let html = PAGES.map(p => `<a class="nav-item ${route.id === p ? 'active' : ''}" href="#${p}">${ico(PAGE_ICON[p])}<span>${t(p)}</span>${p === 'trainer' && Object.keys(S.wrong).length ? `<span class="nav-dot pill bad">${Object.keys(S.wrong).length}</span>` : ''}</a>`).join('');
   for (const g of GROUPS) {
@@ -175,6 +176,7 @@ function updateProgressUI() {
 }
 function closeSidebar() { $('sidebar').classList.remove('open'); $('backdrop').classList.add('hidden'); $('menu-toggle').setAttribute('aria-expanded', 'false'); }
 const footer = () => `<footer class="footer"><span>${t('footer')}</span><span>KaTeX · ${TOPICS.length} ${t('stTopics')}</span></footer>`;
+const ROUTES = { home: () => renderHome(), handbook: () => renderHandbook(), trainer: () => renderTrainer(), exam: () => renderExam(), search: () => renderSearch(), ai: () => renderAI(), progress: () => renderProgress(), graph: () => renderGraph() };
 function render() {
   const parts = decodeURIComponent(location.hash.slice(1)).split('/');
   route = { id: parts[0] || 'home', tab: parts[1] || '' };
@@ -184,7 +186,7 @@ function render() {
   closeSidebar();
   const main = $('main');
   if (tp) { S.visited[tp.id] = 1; save(); renderTopic(tp); }
-  else ({ home: renderHome, handbook: renderHandbook, trainer: renderTrainer, exam: renderExam, search: renderSearch, ai: () => renderAI(), progress: renderProgress, graph: () => renderGraph() })[route.id]();
+  else (ROUTES[route.id] || renderHome)();
   updateProgressUI();
   if (typeof window.scrollTo === 'function') try { window.scrollTo(0, 0); } catch (e) { /* jsdom */ }
   main.focus({ preventScroll: true });
@@ -194,12 +196,12 @@ function render() {
 function renderHome() {
   const labs = new Set(TOPICS.map(x => x.lab).filter(Boolean)).size;
   $('main').innerHTML = `<div class="page">
-  <section class="hero"><div><span class="pill" style="background:#ffffff2e;color:#fff">10–11 · ${LANGS.length} 🌐</span><h1 style="margin-top:14px">${t('heroTitle')}</h1><p>${t('heroLead')}</p>
+  <section class="hero"><div><span class="pill hero-pill">10–11 · ${LANGS.length} 🌐</span><h1 style="margin-top:14px">${t('heroTitle')}</h1><p>${t('heroLead')}</p>
    <div class="row wrap" style="margin-top:20px"><a class="btn white" href="#limit-point">${t('start')} ${ico('arrow')}</a><a class="btn glass" href="#derivative-def/lab">${ico('flask')} ${t('openLab')}</a></div></div>
    <div class="hero-art" id="hero-art"></div></section>
   <div class="stats"><div class="stat" data-g="lim"><b>${TOPICS.length}</b><span>${t('stTopics')}</span></div><div class="stat" data-g="der"><b>${allIds().length}</b><span>${t('stTasks')}</span></div><div class="stat" data-g="app"><b>${labs}</b><span>${t('stLabs')}</span></div><div class="stat" data-g="de"><b>∞</b><span>${t('stVariants')}</span></div></div>
   ${GROUPS.map(g => `<section data-g="${g.id}"><div class="group-head"><span class="group-badge">${g.sym}</span><div class="grow"><h2>${esc(groupName(g.id))}</h2><span class="muted small">${t('grade', { n: g.grade })}</span></div><img class="group-pic" src="${groupPic(g.id)}" alt="" loading="lazy"></div>
-   <div class="topic-grid">${TOPICS.filter(x => x.g === g.id).map(x => { const ids = taskIds(x), d = ids.filter(i => S.solved[i]).length; return `<a class="topic-card" href="#${x.id}"><div class="between"><span class="num">${t('topicN', { n: x.n })}</span>${d ? `<span class="pill ok">${d} / ${ids.length}</span>` : `<span class="pill">${t('minutes', { n: x.min })}</span>`}</div><h3>${esc(C(x.id).t)}</h3><p>${esc(C(x.id).s)}</p><span class="small muted">${t('tasksCount', { n: ids.length })}${x.lab ? ' · ' + t('withLab') : ''}</span></a>`; }).join('')}</div></section>`).join('')}
+   <div class="topic-grid">${TOPICS.filter(x => x.g === g.id).map(x => { const ids = taskIds(x), d = ids.filter(i => S.solved[i]).length; return `<a class="topic-card" href="#${x.id}"><div class="between"><span class="num">${t('topicN', { n: x.n })}</span>${d ? `<span class="pill ok">${d} / ${ids.length}</span>` : ''}</div><h3>${esc(C(x.id).t)}</h3><p>${esc(C(x.id).s)}</p><span class="small muted">${t('tasksCount', { n: ids.length })}${x.lab ? ' · ' + t('withLab') : ''}</span></a>`; }).join('')}</div></section>`).join('')}
   <section style="margin-top:36px"><h2>${t('howTitle')}</h2><div class="grid2">${[['how1', 'book', 'lim'], ['how2', 'bulb', 'der'], ['how3', 'check', 'int'], ['how4', 'flask', 'de']].map(([k, i, g]) => `<div class="card row" data-g="${g}" style="align-items:flex-start"><span class="group-badge" style="flex-shrink:0">${ico(i)}</span><p>${t(k)}</p></div>`).join('')}</div></section>
   ${footer()}</div>`;
   if (typeof heroArt === 'function') heroArt($('hero-art'));
@@ -211,7 +213,7 @@ function renderTopic(tp) {
   if (!tabs.includes(route.tab)) route.tab = 'theory';
   const c = C(tp.id), g = GROUPS.find(x => x.id === tp.g), ids = taskIds(tp), icons = { theory: 'book', examples: 'bulb', practice: 'pen', lab: 'flask', slides: 'slides' };
   $('main').innerHTML = `<div class="page" data-g="${tp.g}">
-  <header class="topic-head" data-sym="${g.sym}"><div class="row wrap"><span class="pill">${t('topicN', { n: tp.n })}</span><span class="pill">${esc(groupName(tp.g))}</span><span class="pill">${t('grade', { n: g.grade })}</span><span class="pill">${ico('clock')} ${t('minutes', { n: tp.min })}</span></div><h1>${esc(c.t)}</h1><p>${esc(c.s)}</p></header>
+  <header class="topic-head" data-sym="${g.sym}"><div class="row wrap"><span class="pill">${t('topicN', { n: tp.n })}</span><span class="pill">${esc(groupName(tp.g))}</span><span class="pill">${t('grade', { n: g.grade })}</span></div><h1>${esc(c.t)}</h1><p>${esc(c.s)}</p></header>
   <nav class="tabs no-print" role="tablist">${tabs.map(x => `<button class="tab ${route.tab === x ? 'active' : ''}" role="tab" aria-selected="${route.tab === x}" onclick="go('${tp.id}','${x}')">${ico(icons[x])}${t(x)}${x === 'practice' ? `<span class="cnt">${ids.length}</span>` : ''}</button>`).join('')}</nav>
   <section id="panel"></section>${footer()}</div>`;
   const panel = $('panel');
@@ -225,7 +227,7 @@ function renderTheory(tp, panel) {
   const c = C(tp.id);
   panel.innerHTML = `<div class="theory-grid"><div>
    <div class="hook hook-pic"><img src="${groupPic(tp.g)}" alt="" loading="lazy"><div><b>${t('whyHook')}</b> ${mx(c.hook)}</div></div>
-   <article class="card prose">${withPlots(mx(c.th))}${algoHtml(tp.id)}${graphHtml(tp.id)}${extraHtml(tp.id)}${factHtml(tp.id)}<div class="warn"><b>${ico('alert')} ${t('mistake')}.</b> ${mx(c.err)}</div></article>
+   <article class="card prose">${withPlots(mx(c.th))}${algoHtml(tp.id)}${detailHtml(tp.id)}${mnemoHtml(tp.id)}${graphHtml(tp.id)}${extraHtml(tp.id)}${comicHtml(tp)}${factHtml(tp.id)}${historyHtml(tp)}${readHtml(tp)}<div class="warn"><b>${ico('alert')} ${t('mistake')}.</b> ${mx(c.err)}</div></article>
    <div class="row wrap no-print" style="margin-top:16px"><button class="btn primary" onclick="go('${tp.id}','examples')">${t('toExamples')} ${ico('arrow')}</button><button class="btn" onclick="go('${tp.id}','practice')">${ico('pen')} ${t('toPractice')}</button>${tp.lab ? `<button class="btn" onclick="go('${tp.id}','lab')">${ico('flask')} ${t('toLab')}</button>` : ''}${GRAPHS[tp.id] ? `<button class="btn" onclick="go('graph','${tp.id}')">${ico('wave')} ${t('toDesmos')}</button>` : ''}<button class="btn" onclick="go('${tp.id}','slides')">${ico('slides')} ${t('slides')}</button><button class="btn soft" onclick="aiAskTopic('${tp.id}')">${ico('bot')} ${t('askTopic')}</button></div>
   </div><aside class="card formula-card"><h3>${ico('target')} ${t('keyFormulas')}</h3>${tp.f.map(x => `<div class="f">${tex(x, true)}</div>`).join('')}
    <h3 style="margin-top:20px">${t('afterTopic')}</h3><ul class="objectives">${c.o.map(x => `<li>${ico('check')}<span>${mx(x)}</span></li>`).join('')}</ul>
@@ -235,7 +237,7 @@ const exVar = {};
 function renderExamples(tp, panel) {
   const n = Math.min(4, GEN[tp.id].length), v = exVar[tp.id] || 0;
   panel.innerHTML = `<div class="bar"><p class="muted grow" style="margin:0">${t('exIntro')}</p><button class="btn soft" onclick="exVar['${tp.id}']=(exVar['${tp.id}']||0)+1;renderExamples(topicById('${tp.id}'),$('panel'))">${ico('refresh')} ${t('otherExamples')}</button></div>
-  <div class="stack">${Array.from({ length: n }, (_, i) => { const tk = getTask(tp.id + '~' + i, 9000 + v); return `<article class="card example"><div class="task-top"><span class="pill g">${t('exampleN', { n: i + 1 })}</span><span class="pill">${t('lvl' + tk.lvl)}</span></div><div class="task-q">${mx(tk.q)}${tk.opts ? `<ul>${tk.opts.map(o => `<li>${mx(o)}</li>`).join('')}</ul>` : ''}</div><details class="solution" open><summary>${ico('bulb')} ${t('solution')}</summary>${stepsHtml(tk)}</details></article>`; }).join('')}</div>
+  ${detailHtml(tp.id)}<div class="stack">${Array.from({ length: n }, (_, i) => { const tk = getTask(tp.id + '~' + i, 9000 + v); return `<article class="card example"><div class="task-top"><span class="pill g">${t('exampleN', { n: i + 1 })}</span><span class="pill">${t('lvl' + tk.lvl)}</span></div><div class="task-q">${mx(tk.q)}${tk.opts ? `<ul>${tk.opts.map(o => `<li>${mx(o)}</li>`).join('')}</ul>` : ''}</div><details class="solution" open><summary>${ico('bulb')} ${t('solution')}</summary>${stepsHtml(tk)}</details></article>`; }).join('')}</div>
   <div class="row no-print" style="margin-top:16px"><button class="btn primary" onclick="go('${tp.id}','practice')">${ico('pen')} ${t('toPractice')}</button></div>`;
 }
 function renderPractice(tp, panel) {
@@ -269,16 +271,16 @@ function examPick(groups, n) {
 }
 function examForm() {
   const groups = [...document.querySelectorAll('#exam-groups input:checked')].map(x => x.value);
-  return { groups: groups.length ? groups : GROUPS.map(g => g.id), n: Math.max(1, Math.min(40, +$('exam-n').value || 10)), min: Math.max(1, +$('exam-min').value || 30) };
+  return { groups: groups.length ? groups : GROUPS.map(g => g.id), n: Math.max(1, Math.min(40, +$('exam-n').value || 10)) };
 }
-function examStart() { const f = examForm(); S.exam = { items: examPick(f.groups, f.n), end: Date.now() + f.min * 60000, answers: {} }; save(); go('exam', 'run'); }
+function examStart() { const f = examForm(); S.exam = { items: examPick(f.groups, f.n), answers: {} }; save(); go('exam', 'run'); }
 function examSubmit() {
   const ex = S.exam; if (!ex) return;
   clearInterval(examTimer);
   ex.items.forEach((it, i) => { const cid = ex.cids && ex.cids[i]; if (cid && $(cid)) { const v = readAnswer(cid); if (v != null) ex.answers[i] = v; } });
   ex.results = ex.items.map((it, i) => ex.answers[i] != null && isRight(getTask(it.id, it.v), ex.answers[i]));
   ex.done = true; delete ex.cids;
-  S.exams.unshift({ date: new Date().toISOString().slice(0, 16).replace('T', ' '), ok: ex.results.filter(Boolean).length, n: ex.items.length });
+  S.exams.unshift({ date: new Date().toISOString().slice(0, 10), ok: ex.results.filter(Boolean).length, n: ex.items.length });
   S.exams = S.exams.slice(0, 20);
   ex.items.forEach((it, i) => { if (!ex.results[i]) S.wrong[it.id] = 1, S.variant[it.id] = it.v; });
   save(); go('exam', 'result');
@@ -289,9 +291,7 @@ function renderExam() {
   if (route.tab === 'run' && ex && !ex.done) {
     const cards = ex.items.map((it, i) => taskCard(it.id, 'exam', i + 1, it.v));
     ex.cids = ex.items.map((_, i) => 'c' + (cardSeq - ex.items.length + i + 1));
-    main.innerHTML = `<div class="page"><div class="bar card" style="position:sticky;top:76px;z-index:5;padding:12px 18px"><b>${t('exam')}</b><span class="grow"></span><span class="muted">${t('left')}</span><span class="timer" id="exam-timer"></span><button class="btn primary" onclick="examSubmit()">${t('submit')}</button></div><div class="stack">${cards.join('')}</div>${footer()}</div>`;
-    const tick = () => { const s = Math.max(0, Math.round((ex.end - Date.now()) / 1000)), el = $('exam-timer'); if (!el) return clearInterval(examTimer); el.textContent = String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0'); if (s <= 0) examSubmit(); };
-    tick(); examTimer = setInterval(tick, 1000);
+    main.innerHTML = `<div class="page"><div class="bar card" style="position:sticky;top:76px;z-index:5;padding:12px 18px"><b>${t('exam')}</b><span class="grow"></span><button class="btn primary" onclick="examSubmit()">${t('submit')}</button></div><div class="stack">${cards.join('')}</div>${footer()}</div>`;
     return;
   }
   if (route.tab === 'result' && ex && ex.done) {
@@ -308,10 +308,10 @@ function renderExam() {
     <h2 style="break-before:page">${t('keys')}</h2><ol>${items.map(it => { const tk = getTask(it.id, it.v); return `<li style="margin-bottom:14px"><b>${mx(tk.ans)}</b><ol class="steps" style="padding:8px 0 0">${tk.steps.map(s => `<li>${mx(s)}</li>`).join('')}</ol></li>`; }).join('')}</ol></div>`;
     return;
   }
-  main.innerHTML = `<div class="page"><h1>${ico('clock')} ${t('exam')}</h1><p class="muted">${t('examLead')}</p>
+  main.innerHTML = `<div class="page"><h1>${ico('check')} ${t('exam')}</h1><p class="muted">${t('examLead')}</p>
   <div class="card stack"><div><b>${t('sections')}</b><div class="chips" id="exam-groups" style="margin-top:8px">${GROUPS.map(g => `<label class="opt" style="margin:0"><input type="checkbox" value="${g.id}" checked><span>${esc(groupName(g.id))}</span></label>`).join('')}</div></div>
-   <div class="grid2"><label><b>${t('count')}</b><input id="exam-n" type="number" min="1" max="40" value="10"></label><label><b>${t('time')}</b><input id="exam-min" type="number" min="1" max="180" value="30"></label></div>
-   <div class="row wrap"><button class="btn primary" onclick="examStart()">${ico('clock')} ${t('startExam')}</button><button class="btn" onclick="const f=examForm();renderExam.sheet=examPick(f.groups,f.n);go('exam','print')">${t('printSheet')}</button>${ex && !ex.done ? `<a class="btn soft" href="#exam/run">→ ${t('exam')}</a>` : ''}</div></div>
+   <label style="display:block;max-width:260px"><b>${t('count')}</b><input id="exam-n" type="number" min="1" max="40" value="10"></label>
+   <div class="row wrap"><button class="btn primary" onclick="examStart()">${ico('check')} ${t('startExam')}</button><button class="btn" onclick="const f=examForm();renderExam.sheet=examPick(f.groups,f.n);go('exam','print')">${t('printSheet')}</button>${ex && !ex.done ? `<a class="btn soft" href="#exam/run">→ ${t('exam')}</a>` : ''}</div></div>
   ${S.exams.length ? `<h2 style="margin-top:28px">${t('history')}</h2><div class="card table-scroll"><table class="ref">${S.exams.map(e => `<tr><td>${e.date}</td><td><b>${t('score', { a: e.ok, b: e.n })}</b></td><td style="width:40%"><div class="track"><div class="fill" style="width:${100 * e.ok / e.n}%"></div></div></td></tr>`).join('')}</table></div>` : ''}${footer()}</div>`;
 }
 
@@ -336,9 +336,7 @@ function renderProgress() {
   $('main').innerHTML = `<div class="page"><h1>${ico('chart')} ${t('progress')}</h1><p class="muted">${t('progLead')}</p>
   <div class="stats"><div class="stat" data-g="int"><b>${d} / ${ids.length}</b><span>${t('pSolved')}</span></div><div class="stat" data-g="der"><b>${att}</b><span>${t('pAttempts')}</span></div><div class="stat" data-g="de"><b>${Object.keys(S.wrong).length}</b><span>${t('pErrors')}</span></div><div class="stat" data-g="lim"><b>${Object.keys(S.visited).length} / ${TOPICS.length}</b><span>${t('pTopics')}</span></div></div>
   <div class="card table-scroll"><table class="ref">${GROUPS.map(g => `<tr data-g="${g.id}"><th colspan="3" style="color:var(--g)">${esc(groupName(g.id))}</th></tr>` + TOPICS.filter(x => x.g === g.id).map(x => { const l = taskIds(x), k = l.filter(i => S.solved[i]).length; return `<tr data-g="${g.id}"><td><a href="#${x.id}/practice">${x.n}. ${esc(C(x.id).t)}</a></td><td style="white-space:nowrap"><b>${k} / ${l.length}</b></td><td style="width:35%"><div class="track"><div class="fill" style="width:${100 * k / l.length}%;background:var(--g)"></div></div></td></tr>`; }).join('')).join('')}</table></div>
-  <h2 style="margin-top:28px">${t('settings')}</h2><div class="card stack"><label class="row"><input type="checkbox" ${S.settings.showSol ? 'checked' : ''} onchange="S.settings.showSol=this.checked;save()"><span>${t('showSol')}</span></label>
-   <label class="row"><span>${t('gate')}</span><select style="width:90px" onchange="S.settings.gate=+this.value;save()">${[1, 2, 3, 4, 5].map(n => `<option ${n === S.settings.gate ? 'selected' : ''}>${n}</option>`).join('')}</select></label>
-   <div class="row wrap"><button class="btn" onclick="exportCsv()">${t('exportCsv')}</button><button class="btn" style="color:var(--bad)" onclick="if(confirm(t('resetQ'))){const s=S.settings;S=blank();S.settings=s;save();render();toast(t('done'))}">${t('reset')}</button></div></div>${footer()}</div>`;
+  <div class="card" style="margin-top:22px"><div class="row wrap"><button class="btn" onclick="exportCsv()">${t('exportCsv')}</button><button class="btn" style="color:var(--bad)" onclick="if(confirm(t('resetQ'))){const s=S.settings;S=blank();S.settings=s;save();render();toast(t('done'))}">${t('reset')}</button></div></div>${footer()}</div>`;
 }
 function exportCsv() {
   const rows = [['topic', 'task', 'solved', 'attempts']].concat(allIds().map(id => { const [a, b] = id.split('~'); return ['"' + C(a).t.replace(/"/g, '""') + '"', +b + 1, S.solved[id] ? 1 : 0, S.attempts[id] || 0]; }));
