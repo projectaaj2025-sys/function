@@ -237,3 +237,6 @@ ol.sol-air>li::before{content:counter(sa);position:absolute;left:14px;top:15px;w
 .deck:fullscreen #slide-fit,.deck.fs #slide-fit{flex:none}
 @media(max-width:760px){.sl-figs{grid-template-columns:1fr}ol.sol-air>li{padding:10px 12px 10px 46px;line-height:2}}
 .slide.fit .prose>.g-wrap{float:right;width:40%;max-width:none;margin:0 0 14px 28px}.slide.fit .prose ol.sol-air{display:block}.slide.fit .prose ol.sol-air>li{overflow:hidden;margin:10px 0}.slide.fit .prose .final,.slide.fit .prose .sol-lines{overflow:hidden}.slide.fit .prose::after{content:'';display:block;clear:both}
+/* ---------- раунд 7: комикс к каждому уроку ---------- */
+.comic.noimg .comic-cap li{border:2px dashed var(--line);background:var(--surface)}
+.lib-comics-wrap>summary{font-size:17px;padding:16px 18px}.lib-comics .group-head{margin-top:22px}.lib-comics .card{box-shadow:none;border:2px solid var(--line)}
