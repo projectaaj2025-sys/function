@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#6d3df5">
+<meta name="description" content="МатАнализ: интерактивный курс для 10–11 классов — предел, производная, интеграл и дифференциальные уравнения. Теория, разобранные примеры, тренажёры, симуляторы и ИИ-наставник на трёх языках.">
+<title>МатАнализ — предел, производная, интеграл · 10–11 класс</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="vendor/katex/katex.min.css">
+<link rel="stylesheet" href="assets/app.css">
+</head>
+<body>
+<header class="topbar"><div class="topbar-inner">
+ <button class="btn icon ghost mobile-only" id="menu-toggle" aria-label="Menu" aria-controls="sidebar" aria-expanded="false"><svg class="ico" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+ <a class="brand" href="#home"><span class="brand-mark">∫</span><span><span class="brand-name" id="brand-name" style="display:block">МатАнализ</span><span class="brand-sub" id="brand-sub"></span></span></a>
+ <nav class="top-nav" id="top-nav"></nav>
+ <div class="top-actions">
+  <button class="btn ghost sm" id="random-button"><svg class="ico" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="8.5" cy="8.5" r="1"/><circle cx="15.5" cy="15.5" r="1"/><circle cx="12" cy="12" r="1"/></svg><span class="rnd-label" id="rnd-label"></span></button>
+  <span class="lang" id="lang-picker"></span>
+  <button class="btn icon ghost" id="theme-toggle" aria-label="Theme"></button>
+ </div>
+</div></header>
+<div class="shell">
+ <aside class="sidebar" id="sidebar">
+  <div class="side-search"><input id="topic-search" type="search"></div>
+  <nav class="nav-scroll" id="course-nav"></nav>
+  <div class="side-foot"><div class="between small"><b id="side-progress"></b><a href="#progress" id="side-more"></a></div><div class="track" style="margin-top:8px"><div class="fill" id="side-bar" style="width:0"></div></div></div>
+ </aside>
+ <div class="backdrop hidden" id="backdrop"></div>
+ <main class="main" id="main" tabindex="-1"></main>
+</div>
+<button class="fab no-print" id="ai-fab" aria-label="AI"><svg class="ico" viewBox="0 0 24 24"><rect x="4" y="8" width="16" height="11" rx="3"/><path d="M12 8V4M9 13v2M15 13v2M2 13v2M22 13v2"/><circle cx="12" cy="3.5" r="1"/></svg></button>
+<dialog id="dlg"><div class="dlg-head"><h3 id="dlg-title"></h3><button class="btn icon ghost" onclick="this.closest('dialog').close()" aria-label="Close"><svg class="ico" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div><div class="dlg-body" id="dlg-body"></div></dialog>
+<div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
+<noscript><p style="margin:30px">Включите JavaScript, чтобы открыть интерактивный курс.</p></noscript>
+<script src="vendor/katex/katex.min.js"></script>
+<script src="js/i18n.js"></script>
+<script src="js/topics.js"></script>
+<script src="js/content.ru.js"></script>
+<script src="js/content.kk.js"></script>
+<script src="js/content.en.js"></script>
+<script src="js/tasks.js"></script>
+<script src="js/tasks2.js"></script>
+<script src="js/labs.js"></script>
+<script src="js/app.js"></script>
+<script src="js/extra.js"></script>
+<script src="js/ai.js"></script>
+<script>boot()</script>
+</body>
+</html>

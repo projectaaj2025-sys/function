@@ -1,0 +1,77 @@
+/* Интерфейс на трёх языках: [ru, kk, en]. Тексты курса — в content.*.js */
+const LANGS = ['ru', 'kk', 'en'];
+let LANG = 'ru';
+const L = (ru, kk, en) => LANG === 'ru' ? ru : LANG === 'kk' ? kk : en;
+const I18N = {
+  brand: ['МатАнализ', 'МатАнализ', 'Calculus Lab'],
+  brandSub: ['Предел · производная · интеграл · 10–11 класс', 'Шек · туынды · интеграл · 10–11 сынып', 'Limits · derivatives · integrals · grades 10–11'],
+  home: ['Обзор', 'Шолу', 'Overview'], handbook: ['Формулы', 'Формулалар', 'Formulas'], trainer: ['Работа над ошибками', 'Қатемен жұмыс', 'Error trainer'],
+  exam: ['Контрольная', 'Бақылау жұмысы', 'Test'], search: ['Поиск', 'Іздеу', 'Search'], ai: ['ИИ-наставник', 'ЖИ-тәлімгер', 'AI tutor'],
+  progress: ['Мой прогресс', 'Менің прогресім', 'My progress'], random: ['Случайная задача', 'Кездейсоқ есеп', 'Random task'],
+  findTopic: ['Найти тему…', 'Тақырыпты табу…', 'Find a topic…'], more: ['Подробнее →', 'Толығырақ →', 'Details →'],
+  solvedOf: ['{a} из {b} задач решено', '{b} есептің {a}-і шешілді', '{a} of {b} tasks solved'],
+  grade: ['{n} класс', '{n} сынып', 'Grade {n}'], minutes: ['{n} мин', '{n} мин', '{n} min'], topicN: ['Тема {n}', '{n}-тақырып', 'Topic {n}'],
+  theory: ['Теория', 'Теория', 'Theory'], examples: ['Разборы', 'Талдаулар', 'Worked examples'], practice: ['Практика', 'Практика', 'Practice'], lab: ['Симулятор', 'Симулятор', 'Simulator'],
+  heroTitle: ['Матанализ — это <em>про движение</em>.', 'Матанализ — бұл <em>қозғалыс туралы</em>.', 'Calculus is <em>about change</em>.'],
+  heroLead: ['Как быстро растёт? Куда стремится? Сколько накопилось? Предел, производная и интеграл отвечают на эти вопросы. Разберёмся на графиках, симуляторах и задачах с пошаговыми решениями.',
+    'Қаншалықты тез өседі? Неге ұмтылады? Қанша жиналды? Шек, туынды және интеграл осы сұрақтарға жауап береді. Графиктер, симуляторлар және қадамдап шешілген есептер арқылы түсінеміз.',
+    'How fast does it grow? Where is it heading? How much has piled up? Limits, derivatives and integrals answer these questions. Explore with graphs, simulators and step-by-step solutions.'],
+  start: ['Начать с пределов', 'Шектен бастау', 'Start with limits'], openLab: ['Открыть симулятор', 'Симуляторды ашу', 'Open a simulator'],
+  stTopics: ['тем по программе', 'бағдарлама тақырыбы', 'syllabus topics'], stTasks: ['задач с разбором', 'талдауы бар есеп', 'tasks with solutions'],
+  stLabs: ['симуляторов', 'симулятор', 'simulators'], stVariants: ['вариантов каждой задачи', 'әр есептің нұсқасы', 'variants of every task'],
+  howTitle: ['Как устроен курс', 'Курс қалай құрылған', 'How the course works'],
+  how1: ['<b>Теория без воды.</b> Коротко, с примерами из жизни и главными формулами.', '<b>Артық сөзсіз теория.</b> Қысқа, өмірден мысалдармен және негізгі формулалармен.', '<b>Theory without fluff.</b> Short, with real-life hooks and key formulas.'],
+  how2: ['<b>Разборы по шагам.</b> Каждое действие объяснено — как у доски.', '<b>Қадамдап талдау.</b> Әр әрекет тақтадағыдай түсіндіріледі.', '<b>Step-by-step examples.</b> Every move explained, like at the board.'],
+  how3: ['<b>Практика с проверкой.</b> Ответ проверяется сразу, после — правильный ответ и полное решение.', '<b>Тексерілетін практика.</b> Жауап бірден тексеріледі, кейін — дұрыс жауап пен толық шешім.', '<b>Checked practice.</b> Instant checking, then the correct answer and a full solution.'],
+  how4: ['<b>Симуляторы.</b> Двигай ползунки и точки — и смотри, как оживают формулы.', '<b>Симуляторлар.</b> Жүгірткілер мен нүктелерді жылжытып, формулалардың қалай жанданатынын көр.', '<b>Simulators.</b> Drag sliders and points and watch the formulas come alive.'],
+  tasksCount: ['{n} задач', '{n} есеп', '{n} tasks'], withLab: ['симулятор', 'симулятор', 'simulator'],
+  afterTopic: ['После темы вы сможете', 'Тақырыптан кейін сіз', 'After this topic you can'], keyFormulas: ['Главные формулы', 'Негізгі формулалар', 'Key formulas'],
+  goals: ['Цели обучения', 'Оқу мақсаттары', 'Learning objectives'], mistake: ['Типичная ошибка', 'Жиі кездесетін қате', 'Common mistake'], whyHook: ['Зачем это?', 'Бұл не үшін?', 'Why care?'],
+  toExamples: ['Смотреть разборы', 'Талдауларды көру', 'See worked examples'], toPractice: ['Решать задачи', 'Есеп шығару', 'Practice'], toLab: ['Проверить на симуляторе', 'Симуляторда тексеру', 'Try the simulator'],
+  askTopic: ['Объясни тему проще', 'Тақырыпты оңайырақ түсіндір', 'Explain it simpler'],
+  exampleN: ['Пример {n}', '{n}-мысал', 'Example {n}'], solution: ['Решение по шагам', 'Қадамдап шешу', 'Step-by-step solution'], otherExamples: ['Другие числа', 'Басқа сандар', 'New numbers'],
+  exIntro: ['Сначала попробуйте решить сами, затем сверяйтесь с разбором. Кнопка «Другие числа» даёт новые примеры того же типа.', 'Алдымен өзіңіз шешіп көріңіз, сосын талдаумен салыстырыңыз. «Басқа сандар» түймесі сол типтегі жаңа мысалдар береді.', 'Try it yourself first, then compare with the solution. “New numbers” gives fresh examples of the same kind.'],
+  lvl1: ['Базовый', 'Базалық', 'Basic'], lvl2: ['Средний', 'Орта', 'Medium'], lvl3: ['Продвинутый', 'Күрделі', 'Advanced'], all: ['Все', 'Барлығы', 'All'],
+  check: ['Проверить', 'Тексеру', 'Check'], hint: ['Подсказка', 'Көмек', 'Hint'], newVariant: ['Новый вариант', 'Жаңа нұсқа', 'New variant'], askAi: ['Спросить ИИ', 'ЖИ-ден сұрау', 'Ask AI'],
+  yourAnswer: ['Ваш ответ', 'Жауабыңыз', 'Your answer'], enterAnswer: ['Введите ответ.', 'Жауапты енгізіңіз.', 'Enter an answer.'], chooseAnswer: ['Выберите вариант.', 'Нұсқаны таңдаңыз.', 'Choose an option.'],
+  inputTip: ['Можно вводить дроби и выражения: 3/4, -2,5, sqrt(2), pi/3, e^2', 'Бөлшек пен өрнек енгізуге болады: 3/4, -2,5, sqrt(2), pi/3, e^2', 'Fractions and expressions are fine: 3/4, -2.5, sqrt(2), pi/3, e^2'],
+  correct: ['Верно!', 'Дұрыс!', 'Correct!'], rightAnswer: ['Правильный ответ', 'Дұрыс жауап', 'Correct answer'],
+  wrong: ['Пока неверно.', 'Әзірге қате.', 'Not yet.'], tryAgain: ['Попытка {a} из {b}: после {b}-й откроется разбор. Загляните в подсказку.', '{b} мүмкіндіктің {a}-і: {b}-ден кейін талдау ашылады. Көмекке қараңыз.', 'Attempt {a} of {b}: the solution opens after attempt {b}. Try the hint.'],
+  opened: ['Разбор открыт — изучите решение и попробуйте новый вариант.', 'Талдау ашылды — шешімді қарап, жаңа нұсқаны көріңіз.', 'The solution is open — study it and try a new variant.'],
+  locked: ['Решение откроется после верного ответа или {n} попыток', 'Шешім дұрыс жауаптан немесе {n} әрекеттен кейін ашылады', 'The solution opens after a correct answer or {n} attempts'],
+  answer: ['Ответ', 'Жауабы', 'Answer'], solved: ['Решено', 'Шешілді', 'Solved'], multiTip: ['Выберите все верные варианты', 'Барлық дұрыс нұсқаны таңдаңыз', 'Select all correct options'],
+  trainerLead: ['Здесь собираются задачи, в которых была ошибка. Решите верно — и задача уйдёт из списка.', 'Мұнда қате жіберілген есептер жиналады. Дұрыс шешсеңіз — есеп тізімнен шығады.', 'Tasks you got wrong are collected here. Solve one correctly and it leaves the list.'],
+  trainerEmpty: ['Ошибок нет — отличная работа! Решайте задачи в темах, а промахи появятся здесь.', 'Қате жоқ — жарайсыз! Тақырыптардағы есептерді шығарыңыз, қателер осында шығады.', 'No mistakes yet — great job! Practise in topics; misses will show up here.'],
+  examLead: ['Соберите контрольную: выберите разделы, число задач и время. Подсказки и разборы откроются после сдачи.', 'Бақылау жұмысын құрастырыңыз: бөлімдерді, есеп саны мен уақытты таңдаңыз. Көмек пен талдау тапсырғаннан кейін ашылады.', 'Build a test: pick sections, number of tasks and time. Hints and solutions open after you submit.'],
+  sections: ['Разделы', 'Бөлімдер', 'Sections'], count: ['Число задач', 'Есеп саны', 'Number of tasks'], time: ['Время, мин', 'Уақыт, мин', 'Time, min'],
+  startExam: ['Начать контрольную', 'Бақылауды бастау', 'Start the test'], printSheet: ['Печатный вариант с ответами', 'Жауаптары бар баспа нұсқасы', 'Printable sheet with answers'],
+  submit: ['Сдать работу', 'Жұмысты тапсыру', 'Submit'], left: ['Осталось', 'Қалды', 'Time left'], result: ['Результат', 'Нәтиже', 'Result'], score: ['{a} из {b} верно', '{b}-ден {a} дұрыс', '{a} of {b} correct'],
+  yourAns: ['Ваш ответ', 'Сіздің жауабыңыз', 'Your answer'], noAns: ['нет ответа', 'жауап жоқ', 'no answer'], again: ['Новая контрольная', 'Жаңа бақылау', 'New test'], history: ['Прошлые результаты', 'Алдыңғы нәтижелер', 'Past results'],
+  print: ['Печать / PDF', 'Басып шығару / PDF', 'Print / PDF'], sheetTitle: ['Самостоятельная работа', 'Өзіндік жұмыс', 'Worksheet'], keys: ['Ответы и решения', 'Жауаптар мен шешімдер', 'Answers and solutions'], nameLine: ['Фамилия, имя: ____________________  Класс: ______', 'Аты-жөні: ____________________  Сынып: ______', 'Name: ____________________  Class: ______'],
+  searchPh: ['Например: касательная, площадь, sin…', 'Мысалы: жанама, аудан, sin…', 'E.g. tangent, area, sin…'], nothing: ['Ничего не найдено.', 'Ештеңе табылмады.', 'Nothing found.'], topics: ['Темы', 'Тақырыптар', 'Topics'], tasks: ['Задачи', 'Есептер', 'Tasks'], open: ['Открыть', 'Ашу', 'Open'],
+  progLead: ['Прогресс хранится только в этом браузере.', 'Прогресс тек осы браузерде сақталады.', 'Progress is stored only in this browser.'],
+  pSolved: ['решено задач', 'шешілген есеп', 'tasks solved'], pAttempts: ['попыток', 'әрекет', 'attempts'], pErrors: ['в работе над ошибками', 'қатемен жұмыста', 'in error trainer'], pTopics: ['тем открыто', 'ашылған тақырып', 'topics visited'],
+  settings: ['Настройки (учителю)', 'Баптаулар (мұғалімге)', 'Settings (teacher)'], showSol: ['Показывать решения сразу', 'Шешімдерді бірден көрсету', 'Show solutions immediately'], gate: ['Попыток до открытия разбора', 'Талдау ашылғанға дейінгі әрекет саны', 'Attempts before solution opens'],
+  exportCsv: ['Скачать CSV', 'CSV жүктеу', 'Download CSV'], reset: ['Сбросить прогресс', 'Прогресті өшіру', 'Reset progress'], resetQ: ['Удалить весь прогресс?', 'Барлық прогресті өшіру керек пе?', 'Delete all progress?'], done: ['Готово', 'Дайын', 'Done'],
+  hbLead: ['Все формулы курса на одной странице — удобно держать открытой при решении задач.', 'Курстың барлық формуласы бір бетте — есеп шығарғанда ашық ұстаған ыңғайлы.', 'All course formulas on one page — keep it open while solving.'],
+  hbLimits: ['Пределы', 'Шектер', 'Limits'], hbDer: ['Таблица производных', 'Туындылар кестесі', 'Table of derivatives'], hbRules: ['Правила дифференцирования', 'Дифференциалдау ережелері', 'Differentiation rules'],
+  hbInt: ['Таблица интегралов', 'Интегралдар кестесі', 'Table of integrals'], hbIntRules: ['Интеграл: свойства и методы', 'Интеграл: қасиеттері мен әдістері', 'Integral: properties and methods'], hbDe: ['Дифференциальные уравнения', 'Дифференциалдық теңдеулер', 'Differential equations'], hbApp: ['Исследование функции', 'Функцияны зерттеу', 'Function analysis'],
+  hbHyp: ['Гиперболические функции: определения', 'Гиперболалық функциялар: анықтамалар', 'Hyperbolic functions: definitions'],
+  aiLead: ['Наставник объясняет темы, подсказывает ход решения и придумывает похожие задачи. Нужен собственный API-ключ — он хранится только в вашем браузере.', 'Тәлімгер тақырыпты түсіндіреді, шешу жолын нұсқайды және ұқсас есептер құрастырады. Жеке API-кілт қажет — ол тек сіздің браузеріңізде сақталады.', 'The tutor explains topics, hints at the next step and invents similar problems. You need your own API key — it stays in your browser only.'],
+  aiSetup: ['Подключение', 'Қосу', 'Connection'], provider: ['Провайдер', 'Провайдер', 'Provider'], apiKey: ['API-ключ', 'API-кілт', 'API key'], model: ['Модель', 'Модель', 'Model'], baseUrl: ['Адрес API', 'API мекенжайы', 'API base URL'],
+  save: ['Сохранить', 'Сақтау', 'Save'], getKey: ['Где взять ключ', 'Кілтті қайдан алуға болады', 'Get a key'], loadModels: ['Список моделей', 'Модельдер тізімі', 'Load models'], testConn: ['Проверить связь', 'Байланысты тексеру', 'Test connection'],
+  aiPh: ['Спросите что-нибудь: «почему производная синуса — косинус?»', 'Сұрақ қойыңыз: «синустың туындысы неге косинус?»', 'Ask anything: “why is the derivative of sine cosine?”'], send: ['Отправить', 'Жіберу', 'Send'], clear: ['Очистить чат', 'Чатты тазалау', 'Clear chat'],
+  aiNoKey: ['Сначала укажите API-ключ в блоке «Подключение».', 'Алдымен «Қосу» бөлімінде API-кілтті көрсетіңіз.', 'Add an API key in “Connection” first.'], aiThinking: ['Думаю…', 'Ойланып жатырмын…', 'Thinking…'], aiOk: ['Связь есть!', 'Байланыс бар!', 'Connected!'],
+  chip1: ['Объясни предел на пальцах', 'Шекті қарапайым түсіндір', 'Explain limits intuitively'], chip2: ['Придумай задачу на производную и проверь меня', 'Туындыға есеп құрастырып, мені тексер', 'Give me a derivative problem and check me'],
+  chip3: ['Зачем нужен интеграл в жизни?', 'Интеграл өмірде не үшін керек?', 'What are integrals for in real life?'], chip4: ['Как решать уравнение y″ + 4y = 0?', 'y″ + 4y = 0 теңдеуін қалай шешеді?', 'How do I solve y″ + 4y = 0?'],
+  footer: ['МатАнализ · интерактивный курс для 10–11 классов', 'МатАнализ · 10–11 сыныптарға арналған интерактивті курс', 'Calculus Lab · an interactive course for grades 10–11'],
+  explore: ['Исследуйте', 'Зерттеңіз', 'Explore'], play: ['▶ Пуск', '▶ Қосу', '▶ Play'], pause: ['❚❚ Пауза', '❚❚ Кідірту', '❚❚ Pause'], fn: ['Функция', 'Функция', 'Function'],
+  light: ['Светлая тема', 'Жарық тақырып', 'Light theme'], dark: ['Тёмная тема', 'Қараңғы тақырып', 'Dark theme']
+};
+function t(key, vars) {
+  const row = I18N[key];
+  if (!row) { console.warn('i18n: ' + key); return key; }
+  let s = row[LANGS.indexOf(LANG)];
+  if (vars) for (const k in vars) s = s.split('{' + k + '}').join(vars[k]);
+  return s;
+}
