@@ -146,7 +146,7 @@ dialog{border:0;border-radius:22px;padding:0;background:var(--surface);color:var
 @media(max-width:480px){#random-button{display:none}}
 @media print{.topbar,.sidebar,.fab,.no-print,.footer{display:none!important}body{background:#fff}.page{padding:0;max-width:none}.card,.task{box-shadow:none;break-inside:avoid}}
 
-/* ---------- картинки, истории, слайды, Desmos, мини-графики ---------- */
+/* ---------- картинки, истории, слайды, графики, мини-графики ---------- */
 .hook-pic{display:flex;gap:16px;align-items:center}.hook-pic img{width:150px;height:auto;border-radius:14px;flex-shrink:0;background:#fff}
 .group-pic{height:74px;width:auto;border-radius:14px;background:#fff;box-shadow:var(--shadow)}
 .story{margin:18px 0;padding:14px 18px;border-radius:16px;background:color-mix(in srgb,var(--g) 8%,var(--surface));border-left:5px solid var(--g)}
@@ -174,3 +174,14 @@ dialog{border:0;border-radius:22px;padding:0;background:var(--surface);color:var
 @media(max-width:760px){.hook-pic{flex-direction:column;align-items:stretch}.hook-pic img{width:100%;max-height:170px;object-fit:cover}.group-pic{display:none}.slide{padding:20px 18px;font-size:17px;min-height:360px}.slide h2,.sl-title h2{font-size:26px}.sl-big{font-size:19px}.sl-title{grid-template-columns:1fr;min-height:0}.deck-hint{display:none}.desmos-box{min-height:480px}}
 @media print{.deck-bar{display:none}}
 .formula-card .f{overflow-x:auto;overflow-y:hidden}
+
+/* ---------- графический калькулятор ---------- */
+.graph-box{height:min(66vh,600px);min-height:380px;border:0;border-radius:12px;background:var(--surface);touch-action:none}
+.graph-box text,.graph-box .JXGtext{color:var(--muted);font-family:inherit}
+.g-row{display:flex;align-items:center;gap:8px}.g-row i{width:12px;height:12px;border-radius:50%;flex:none}
+.g-row .g-y{font-weight:800;white-space:nowrap;color:var(--muted);font-size:14px}
+.g-row input{flex:1;min-width:0;font:600 16px ui-monospace,Menlo,Consolas,monospace;padding:8px 10px;border:1.5px solid var(--line);border-radius:10px;background:var(--surface);color:inherit}
+.g-row input.bad{border-color:var(--bad)}
+.g-opts{display:flex;flex-wrap:wrap;gap:6px 14px;margin:12px 0 4px}.g-chk{display:flex;align-items:center;gap:6px;font-weight:700;font-size:14px}
+.g-chk select{padding:4px 6px;border-radius:8px;border:1.5px solid var(--line);background:var(--surface);color:inherit;font:inherit}
+.story+.story{margin-top:14px}
