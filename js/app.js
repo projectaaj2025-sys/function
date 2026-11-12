@@ -184,7 +184,7 @@ function render() {
   closeSidebar();
   const main = $('main');
   if (tp) { S.visited[tp.id] = 1; save(); renderTopic(tp); }
-  else ({ home: renderHome, handbook: renderHandbook, trainer: renderTrainer, exam: renderExam, search: renderSearch, ai: () => renderAI(), progress: renderProgress })[route.id]();
+  else ({ home: renderHome, handbook: renderHandbook, trainer: renderTrainer, exam: renderExam, search: renderSearch, ai: () => renderAI(), progress: renderProgress, graph: () => renderGraph() })[route.id]();
   updateProgressUI();
   if (typeof window.scrollTo === 'function') try { window.scrollTo(0, 0); } catch (e) { /* jsdom */ }
   main.focus({ preventScroll: true });
@@ -198,7 +198,7 @@ function renderHome() {
    <div class="row wrap" style="margin-top:20px"><a class="btn white" href="#limit-point">${t('start')} ${ico('arrow')}</a><a class="btn glass" href="#derivative-def/lab">${ico('flask')} ${t('openLab')}</a></div></div>
    <div class="hero-art" id="hero-art"></div></section>
   <div class="stats"><div class="stat" data-g="lim"><b>${TOPICS.length}</b><span>${t('stTopics')}</span></div><div class="stat" data-g="der"><b>${allIds().length}</b><span>${t('stTasks')}</span></div><div class="stat" data-g="app"><b>${labs}</b><span>${t('stLabs')}</span></div><div class="stat" data-g="de"><b>∞</b><span>${t('stVariants')}</span></div></div>
-  ${GROUPS.map(g => `<section data-g="${g.id}"><div class="group-head"><span class="group-badge">${g.sym}</span><div><h2>${esc(groupName(g.id))}</h2><span class="muted small">${t('grade', { n: g.grade })}</span></div></div>
+  ${GROUPS.map(g => `<section data-g="${g.id}"><div class="group-head"><span class="group-badge">${g.sym}</span><div class="grow"><h2>${esc(groupName(g.id))}</h2><span class="muted small">${t('grade', { n: g.grade })}</span></div><img class="group-pic" src="${groupPic(g.id)}" alt="" loading="lazy"></div>
    <div class="topic-grid">${TOPICS.filter(x => x.g === g.id).map(x => { const ids = taskIds(x), d = ids.filter(i => S.solved[i]).length; return `<a class="topic-card" href="#${x.id}"><div class="between"><span class="num">${t('topicN', { n: x.n })}</span>${d ? `<span class="pill ok">${d} / ${ids.length}</span>` : `<span class="pill">${t('minutes', { n: x.min })}</span>`}</div><h3>${esc(C(x.id).t)}</h3><p>${esc(C(x.id).s)}</p><span class="small muted">${t('tasksCount', { n: ids.length })}${x.lab ? ' · ' + t('withLab') : ''}</span></a>`; }).join('')}</div></section>`).join('')}
   <section style="margin-top:36px"><h2>${t('howTitle')}</h2><div class="grid2">${[['how1', 'book', 'lim'], ['how2', 'bulb', 'der'], ['how3', 'check', 'int'], ['how4', 'flask', 'de']].map(([k, i, g]) => `<div class="card row" data-g="${g}" style="align-items:flex-start"><span class="group-badge" style="flex-shrink:0">${ico(i)}</span><p>${t(k)}</p></div>`).join('')}</div></section>
   ${footer()}</div>`;
@@ -207,9 +207,9 @@ function renderHome() {
 
 /* ---------- тема ---------- */
 function renderTopic(tp) {
-  const tabs = ['theory', 'examples', 'practice'].concat(tp.lab ? ['lab'] : []);
+  const tabs = ['theory', 'slides', 'examples', 'practice'].concat(tp.lab ? ['lab'] : []);
   if (!tabs.includes(route.tab)) route.tab = 'theory';
-  const c = C(tp.id), g = GROUPS.find(x => x.id === tp.g), ids = taskIds(tp), icons = { theory: 'book', examples: 'bulb', practice: 'pen', lab: 'flask' };
+  const c = C(tp.id), g = GROUPS.find(x => x.id === tp.g), ids = taskIds(tp), icons = { theory: 'book', examples: 'bulb', practice: 'pen', lab: 'flask', slides: 'slides' };
   $('main').innerHTML = `<div class="page" data-g="${tp.g}">
   <header class="topic-head" data-sym="${g.sym}"><div class="row wrap"><span class="pill">${t('topicN', { n: tp.n })}</span><span class="pill">${esc(groupName(tp.g))}</span><span class="pill">${t('grade', { n: g.grade })}</span><span class="pill">${ico('clock')} ${t('minutes', { n: tp.min })}</span></div><h1>${esc(c.t)}</h1><p>${esc(c.s)}</p></header>
   <nav class="tabs no-print" role="tablist">${tabs.map(x => `<button class="tab ${route.tab === x ? 'active' : ''}" role="tab" aria-selected="${route.tab === x}" onclick="go('${tp.id}','${x}')">${ico(icons[x])}${t(x)}${x === 'practice' ? `<span class="cnt">${ids.length}</span>` : ''}</button>`).join('')}</nav>
@@ -217,15 +217,16 @@ function renderTopic(tp) {
   const panel = $('panel');
   if (route.tab === 'theory') renderTheory(tp, panel);
   else if (route.tab === 'examples') renderExamples(tp, panel);
+  else if (route.tab === 'slides') renderSlides(tp, panel);
   else if (route.tab === 'practice') renderPractice(tp, panel);
   else { panel.innerHTML = '<div id="lab-root"></div>'; LABS[tp.lab]($('lab-root'), tp); }
 }
 function renderTheory(tp, panel) {
   const c = C(tp.id);
   panel.innerHTML = `<div class="theory-grid"><div>
-   <div class="hook"><b>${t('whyHook')}</b> ${mx(c.hook)}</div>
-   <article class="card prose">${mx(c.th)}<div class="warn"><b>${ico('alert')} ${t('mistake')}.</b> ${mx(c.err)}</div></article>
-   <div class="row wrap no-print" style="margin-top:16px"><button class="btn primary" onclick="go('${tp.id}','examples')">${t('toExamples')} ${ico('arrow')}</button><button class="btn" onclick="go('${tp.id}','practice')">${ico('pen')} ${t('toPractice')}</button>${tp.lab ? `<button class="btn" onclick="go('${tp.id}','lab')">${ico('flask')} ${t('toLab')}</button>` : ''}<button class="btn soft" onclick="aiAskTopic('${tp.id}')">${ico('bot')} ${t('askTopic')}</button></div>
+   <div class="hook hook-pic"><img src="${groupPic(tp.g)}" alt="" loading="lazy"><div><b>${t('whyHook')}</b> ${mx(c.hook)}</div></div>
+   <article class="card prose">${mx(c.th)}${extraHtml(tp.id)}<div class="warn"><b>${ico('alert')} ${t('mistake')}.</b> ${mx(c.err)}</div></article>
+   <div class="row wrap no-print" style="margin-top:16px"><button class="btn primary" onclick="go('${tp.id}','examples')">${t('toExamples')} ${ico('arrow')}</button><button class="btn" onclick="go('${tp.id}','practice')">${ico('pen')} ${t('toPractice')}</button>${tp.lab ? `<button class="btn" onclick="go('${tp.id}','lab')">${ico('flask')} ${t('toLab')}</button>` : ''}${DESMOS[tp.id] ? `<button class="btn" onclick="go('graph','${tp.id}')">${ico('wave')} ${t('toDesmos')}</button>` : ''}<button class="btn" onclick="go('${tp.id}','slides')">${ico('slides')} ${t('slides')}</button><button class="btn soft" onclick="aiAskTopic('${tp.id}')">${ico('bot')} ${t('askTopic')}</button></div>
   </div><aside class="card formula-card"><h3>${ico('target')} ${t('keyFormulas')}</h3>${tp.f.map(x => `<div class="f">${tex(x, true)}</div>`).join('')}
    <h3 style="margin-top:20px">${t('afterTopic')}</h3><ul class="objectives">${c.o.map(x => `<li>${ico('check')}<span>${mx(x)}</span></li>`).join('')}</ul>
    <div class="codes" title="${t('goals')}">${tp.codes.map(x => `<span class="pill g">${x}</span>`).join('')}</div></aside></div>`;

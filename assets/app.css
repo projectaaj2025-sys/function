@@ -145,3 +145,32 @@ dialog{border:0;border-radius:22px;padding:0;background:var(--surface);color:var
 @media(max-width:760px){.hero{grid-template-columns:1fr;padding:26px 20px}.stats{grid-template-columns:1fr 1fr}.grid2,.grid3{grid-template-columns:1fr}.page{padding:16px 13px 70px}.brand-sub{display:none}.topbar-inner{gap:8px;padding:0 10px}.topic-head{padding:20px}.task{padding:16px}.rnd-label{display:none}.lang button{padding:6px 6px;font-size:11.5px}.brand-mark{width:34px;height:34px}}
 @media(max-width:480px){#random-button{display:none}}
 @media print{.topbar,.sidebar,.fab,.no-print,.footer{display:none!important}body{background:#fff}.page{padding:0;max-width:none}.card,.task{box-shadow:none;break-inside:avoid}}
+
+/* ---------- картинки, истории, слайды, Desmos, мини-графики ---------- */
+.hook-pic{display:flex;gap:16px;align-items:center}.hook-pic img{width:150px;height:auto;border-radius:14px;flex-shrink:0;background:#fff}
+.group-pic{height:74px;width:auto;border-radius:14px;background:#fff;box-shadow:var(--shadow)}
+.story{margin:18px 0;padding:14px 18px;border-radius:16px;background:color-mix(in srgb,var(--g) 8%,var(--surface));border-left:5px solid var(--g)}
+.story h3{margin-top:0;display:flex;align-items:center;gap:8px;color:var(--g)}
+.desmos-box{height:min(68vh,640px);min-height:420px;border-radius:14px;overflow:hidden;position:relative}
+.desmos-wait{position:absolute;inset:0;display:grid;place-content:center;justify-items:center;gap:12px;text-align:center;color:var(--muted);font-weight:800;padding:20px}
+#graph-chips button.active{background:var(--g);color:#fff;border-color:var(--g)}
+#graph-chips button{border:1px solid var(--line);background:var(--surface);color:var(--text);padding:7px 12px;border-radius:999px;font-weight:700;font-size:13.5px;cursor:pointer}
+.deck{background:var(--surface);border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow);overflow:hidden;display:flex;flex-direction:column}
+.deck .track{border-radius:0;height:6px}.deck .fill{background:var(--g);transition:width .25s}
+.slide{padding:34px 44px;min-height:440px;font-size:19px;overflow:auto;flex:1;animation:slin .25s ease}
+@keyframes slin{from{opacity:0;transform:translateX(14px)}to{opacity:1;transform:none}}
+.slide h2{font-size:34px;margin:6px 0 14px;line-height:1.15}.slide .prose{font-size:19px}.slide .f{margin:8px 0}
+.sl-kicker{font-weight:900;text-transform:uppercase;letter-spacing:.08em;font-size:13px;color:var(--g)}
+.sl-big{font-size:23px;line-height:1.5;margin:12px 0}
+.sl-title{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:28px;align-items:center;min-height:380px}
+.sl-title img{width:100%;border-radius:20px;background:#fff}.sl-title h2{font-size:40px}.sl-title p{font-size:21px;color:var(--muted)}
+.sl-formulas{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px;margin-top:14px}
+.deck-bar{display:flex;align-items:center;gap:12px;padding:12px 16px;border-top:1px solid var(--line);background:var(--soft)}
+.deck:fullscreen{border-radius:0;border:0}.deck:fullscreen .slide{padding:5vh 7vw;font-size:24px}.deck:fullscreen .slide .prose{font-size:24px}.deck:fullscreen .sl-big{font-size:30px}.deck:fullscreen .slide h2{font-size:46px}
+.mini-wrap{margin:12px 0 4px;max-width:480px}.mini-plot{width:100%;height:auto;background:var(--surface);border:1px solid var(--line);border-radius:14px;display:block}
+.mp-grid{stroke:var(--text);stroke-opacity:.09}.mp-axis{stroke:var(--text);stroke-opacity:.7;stroke-width:1.4}.mp-t{font-size:10px;fill:var(--muted);font-weight:700}
+.mp-curve{fill:none;stroke:var(--g,#7c3aed);stroke-width:2.8;stroke-linecap:round}.mp-name{font-size:13px;font-weight:800;fill:var(--g,#7c3aed);font-style:italic}
+.mp-dot{fill:var(--pink,#ec4899)}.mp-drop{stroke:var(--pink,#ec4899);stroke-dasharray:3 3;stroke-opacity:.7}.mp-mark{font-size:12px;font-weight:800;fill:var(--text)}
+@media(max-width:760px){.hook-pic{flex-direction:column;align-items:stretch}.hook-pic img{width:100%;max-height:170px;object-fit:cover}.group-pic{display:none}.slide{padding:20px 18px;font-size:17px;min-height:360px}.slide h2,.sl-title h2{font-size:26px}.sl-big{font-size:19px}.sl-title{grid-template-columns:1fr;min-height:0}.deck-hint{display:none}.desmos-box{min-height:480px}}
+@media print{.deck-bar{display:none}}
+.formula-card .f{overflow-x:auto;overflow-y:hidden}
