@@ -271,9 +271,9 @@ function examPick(groups, n) {
 }
 function examForm() {
   const groups = [...document.querySelectorAll('#exam-groups input:checked')].map(x => x.value);
-  return { groups: groups.length ? groups : GROUPS.map(g => g.id), n: Math.max(1, Math.min(40, +$('exam-n').value || 10)) };
+  return { groups: groups.length ? groups : GROUPS.map(g => g.id), n: Math.max(1, Math.min(40, +$('exam-n').value || 10)), min: Math.max(1, +$('exam-min').value || 30) };
 }
-function examStart() { const f = examForm(); S.exam = { items: examPick(f.groups, f.n), answers: {} }; save(); go('exam', 'run'); }
+function examStart() { const f = examForm(); S.exam = { items: examPick(f.groups, f.n), end: Date.now() + f.min * 60000, answers: {} }; save(); go('exam', 'run'); }
 function examSubmit() {
   const ex = S.exam; if (!ex) return;
   clearInterval(examTimer);
@@ -291,7 +291,9 @@ function renderExam() {
   if (route.tab === 'run' && ex && !ex.done) {
     const cards = ex.items.map((it, i) => taskCard(it.id, 'exam', i + 1, it.v));
     ex.cids = ex.items.map((_, i) => 'c' + (cardSeq - ex.items.length + i + 1));
-    main.innerHTML = `<div class="page"><div class="bar card" style="position:sticky;top:76px;z-index:5;padding:12px 18px"><b>${t('exam')}</b><span class="grow"></span><button class="btn primary" onclick="examSubmit()">${t('submit')}</button></div><div class="stack">${cards.join('')}</div>${footer()}</div>`;
+    main.innerHTML = `<div class="page"><div class="bar card" style="position:sticky;top:76px;z-index:5;padding:12px 18px"><b>${t('exam')}</b><span class="grow"></span><span class="muted">${t('left')}</span><span class="timer" id="exam-timer"></span><button class="btn primary" onclick="examSubmit()">${t('submit')}</button></div><div class="stack">${cards.join('')}</div>${footer()}</div>`;
+    const tick = () => { const s = Math.max(0, Math.round((ex.end - Date.now()) / 1000)), el = $('exam-timer'); if (!el) return clearInterval(examTimer); el.textContent = String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0'); if (s <= 0) examSubmit(); };
+    if (ex.end) { tick(); examTimer = setInterval(tick, 1000); }
     return;
   }
   if (route.tab === 'result' && ex && ex.done) {
@@ -310,7 +312,7 @@ function renderExam() {
   }
   main.innerHTML = `<div class="page"><h1>${ico('check')} ${t('exam')}</h1><p class="muted">${t('examLead')}</p>
   <div class="card stack"><div><b>${t('sections')}</b><div class="chips" id="exam-groups" style="margin-top:8px">${GROUPS.map(g => `<label class="opt" style="margin:0"><input type="checkbox" value="${g.id}" checked><span>${esc(groupName(g.id))}</span></label>`).join('')}</div></div>
-   <label style="display:block;max-width:260px"><b>${t('count')}</b><input id="exam-n" type="number" min="1" max="40" value="10"></label>
+   <div class="grid2"><label><b>${t('count')}</b><input id="exam-n" type="number" min="1" max="40" value="10"></label><label><b>${t('time')}</b><input id="exam-min" type="number" min="1" max="180" value="30"></label></div>
    <div class="row wrap"><button class="btn primary" onclick="examStart()">${ico('check')} ${t('startExam')}</button><button class="btn" onclick="const f=examForm();renderExam.sheet=examPick(f.groups,f.n);go('exam','print')">${t('printSheet')}</button>${ex && !ex.done ? `<a class="btn soft" href="#exam/run">→ ${t('exam')}</a>` : ''}</div></div>
   ${S.exams.length ? `<h2 style="margin-top:28px">${t('history')}</h2><div class="card table-scroll"><table class="ref">${S.exams.map(e => `<tr><td>${e.date}</td><td><b>${t('score', { a: e.ok, b: e.n })}</b></td><td style="width:40%"><div class="track"><div class="fill" style="width:${100 * e.ok / e.n}%"></div></div></td></tr>`).join('')}</table></div>` : ''}${footer()}</div>`;
 }

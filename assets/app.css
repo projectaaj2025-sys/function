@@ -216,3 +216,24 @@ dialog{border:0;border-radius:22px;padding:0;background:var(--surface);color:var
 .sl-hist{font-size:20px;line-height:1.5}.slide .comic{margin:0}.slide .comic-cap li{font-size:15.5px}.sl-formulas.warm{grid-template-columns:repeat(3,1fr)}table.self td:not(:first-child),table.self th:not(:first-child){text-align:center;width:16%}.slide .detail{border:0;padding:0;margin:8px 0 0}
 @media(max-width:760px){.drill-opts,.match{grid-template-columns:1fr}.match{grid-template-columns:1fr 1fr;gap:8px}.comic-cap{grid-template-columns:1fr}.sl-formulas.warm{grid-template-columns:1fr 1fr}.ws-key>ol{columns:1}.drill-ask{font-size:21px}.lib-grid{grid-template-columns:1fr}}
 @media print{.ws-page>*:not(#ws-out){display:none!important}.ws-sheet{border:0;border-radius:0;padding:0;margin:0;break-after:page}.ws-sheet:last-child{break-after:auto}.read,.drill-opt:not(.right){break-inside:avoid}}
+/* ---------- раунд 6: воздух в решениях, слайды во весь экран ---------- */
+.prose{line-height:1.8}.prose p{margin:12px 0}.prose .katex-display{margin:16px 0}
+.sol-h{margin:18px 0 6px!important;font-size:1.05em}
+.prose ol.sol-air,ol.sol-air{list-style:none;counter-reset:sa;padding:0;margin:10px 0 14px;display:grid;gap:10px}
+ol.sol-air>li{counter-increment:sa;position:relative;margin:0;padding:12px 16px 12px 54px;border-radius:14px;background:var(--soft);line-height:2.15}
+ol.sol-air>li::before{content:counter(sa);position:absolute;left:14px;top:15px;width:27px;height:27px;border-radius:50%;background:var(--g,var(--pri));color:#fff;font-weight:900;font-size:13.5px;display:grid;place-items:center;line-height:1}
+.sol-lines{border-left:4px solid var(--g,var(--pri));padding:2px 0 2px 18px;margin:10px 0 14px}.sol-lines p{margin:12px 0;line-height:2.1}
+.prose .final.sol-ans{margin:12px 0 20px;line-height:2}
+.bk-src{font-size:13px;color:var(--muted);font-style:italic;margin-top:-4px!important}
+.steps li{padding-bottom:18px;line-height:1.9}.steps li .katex-display{margin:12px 0}.detail .steps li{padding-bottom:20px}
+.ws-steps li{margin:8px 0;line-height:1.8}
+.sl-qa{display:grid;gap:12px;margin-top:14px}.sl-qa summary{font-size:1.05em}.sl-qa-a{padding:12px 16px;line-height:1.7}
+.sl-figs{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:12px}.sl-figs .g-wrap{max-width:none;margin:0 0 8px}.sl-figs .g-legend{display:none}
+.slide .sol-air>li,.slide .sol-lines p{line-height:2}
+#slide-fit{min-width:0}
+.deck.fs{position:fixed;inset:0;z-index:300;border-radius:0;border:0;display:flex;flex-direction:column;background:var(--surface)}
+.deck:fullscreen .slide,.deck.fs .slide{padding:3vh 3vw;font-size:19px;overflow:hidden;display:flex;align-items:center;justify-content:center;min-height:0}
+.deck:fullscreen .slide .prose,.deck.fs .slide .prose{font-size:19px}.deck:fullscreen .sl-big,.deck.fs .sl-big{font-size:23px}.deck:fullscreen .slide h2,.deck.fs .slide h2{font-size:34px}.deck:fullscreen .sl-algo,.deck.fs .sl-algo{font-size:21px}
+.deck:fullscreen #slide-fit,.deck.fs #slide-fit{flex:none}
+@media(max-width:760px){.sl-figs{grid-template-columns:1fr}ol.sol-air>li{padding:10px 12px 10px 46px;line-height:2}}
+.slide.fit .prose>.g-wrap{float:right;width:40%;max-width:none;margin:0 0 14px 28px}.slide.fit .prose ol.sol-air{display:block}.slide.fit .prose ol.sol-air>li{overflow:hidden;margin:10px 0}.slide.fit .prose .final,.slide.fit .prose .sol-lines{overflow:hidden}.slide.fit .prose::after{content:'';display:block;clear:both}

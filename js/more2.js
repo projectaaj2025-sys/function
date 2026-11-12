@@ -155,7 +155,7 @@ function gPlot(rows, view, o) {
   const legend = rows.map((r, i) => `<span><i style="background:${PCOL[i % 4]}"></i>${esc(r.replace(/^~/, ''))}</span>`).join('') + (o.d1 ? `<span><i style="background:var(--orange)"></i>f′(x)</span>` : '') + (o.tan ? `<span><i style="background:var(--orange)"></i>${t('gTan')}</span>` : '');
   return `<div class="mini-wrap g-wrap">${s}</svg><div class="g-legend">${legend}</div></div>`;
 }
-const withPlots = html => html.replace(/<i data-plot="([^"]*)"><\/i>/g, (m, spec) => { const [rows, view, marks, vas] = spec.split('|'); return gPlot(rows.split(';'), view.split(',').map(Number), { marks: marks ? marks.split(',').map(Number) : [], vasym: vas ? vas.split(',').map(Number) : [] }); });
+const withPlots = html => html.replace(/<i data-plot="([^"]*)"><\/i>/g, (m, spec) => { const [rows, view, marks, vas, ar] = spec.split('|'), A = ar ? ar.split(',').map(Number) : null; return gPlot(rows.split(';'), view.split(',').map(Number), { marks: marks ? marks.split(',').map(Number) : [], vasym: vas ? vas.split(',').map(Number) : [], area: A ? (A[2] || 1) : 0, P: A ? { a: A[0], b: A[1] } : undefined }); });
 function topicPlot(id) {
   const g = GRAPHS[id]; if (!g) return '';
   return gPlot(g.rows, g.view || [-8, 8, -6, 6], { P: { a: g.a != null ? g.a : 1, b: g.b != null ? g.b : 2, k: g.k != null ? g.k : 1, c: g.c != null ? g.c : 0 }, area: g.area, tan: g.tan, d1: g.d1 });
