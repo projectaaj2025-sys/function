@@ -276,7 +276,7 @@ LABS.spring = root => lab(root, { view: [0, 10, -3.4, 3.4], init: { t: 0 },
 
 function heroArt(el) {
   const f = x => 1.2 + Math.sin(x) * 0.9 + x * 0.25, P = Plot(-0.3, 6.3, 0, 4.2, 520, 330), x0 = 3.6, k = dnum(f, x0);
-  P.raw('<g style="--plot-grid:#ffffff30;--plot-axis:#ffffffaa;--plot-text:#ffffffcc">').grid().area(f, 0.8, 2.8, '#ffe066').fn(f, '#fff', { w: 4 }).line(x0 - 1.6, f(x0) - 1.6 * k, x0 + 1.6, f(x0) + 1.6 * k, '#ffe066', { w: 3 }).dot(x0, f(x0), '#ff3d8b', 8)
-    .text(1.35, 0.7, '∫ f(x) dx', '#fff').text(x0 + .5, f(x0) - .5, "f '(x₀)", '#ffe066').raw('</g>');
+  P.raw('<g style="--plot-grid:#ffffff26;--plot-axis:#ffffffcc;--plot-text:#ffffff">').grid().area(f, 0.8, 2.8, '#ffe066').fn(f, '#fff', { w: 4 }).line(x0 - 1.6, f(x0) - 1.6 * k, x0 + 1.6, f(x0) + 1.6 * k, '#ffe066', { w: 3 }).dot(x0, f(x0), '#ff3d8b', 8)
+    .text(1.35, 0.7, '∫ f(x) dx', '#fff').text(x0 + .35, f(x0) + .45, "f '(x₀)", '#ffe066').raw('</g>');
   el.innerHTML = P.html().replace('class="plot"', 'class="plot" style="background:transparent;border:0"');
 }

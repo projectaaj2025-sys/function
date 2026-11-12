@@ -240,3 +240,13 @@ ol.sol-air>li::before{content:counter(sa);position:absolute;left:14px;top:15px;w
 /* ---------- раунд 7: комикс к каждому уроку ---------- */
 .comic.noimg .comic-cap li{border:2px dashed var(--line);background:var(--surface)}
 .lib-comics-wrap>summary{font-size:17px;padding:16px 18px}.lib-comics .group-head{margin-top:22px}.lib-comics .card{box-shadow:none;border:2px solid var(--line)}
+/* ---------- раунд 8: контрастный первый экран ---------- */
+.hero{background:linear-gradient(120deg,#f1ecff 0%,#f7ecff 50%,#fff0f5 100%);color:#17103d;border:2px solid #e1d6ff}
+.hero h1{color:#17103d}
+.hero h1 em{background:linear-gradient(transparent 60%,#ffd84a 60%,#ffd84a 94%,transparent 94%);-webkit-background-clip:border-box;background-clip:border-box;color:#4a1fd6;-webkit-text-fill-color:#4a1fd6;padding:0 .08em;border-radius:4px;-webkit-box-decoration-break:clone;box-decoration-break:clone}
+.hero p{color:#2a2158;font-weight:600}
+.hero-pill{background:#17103d;color:#fff}
+.hero .btn.white{background:#4a1fd6;color:#fff;box-shadow:0 10px 22px -10px #4a1fd6}.hero .btn.glass{background:#fff;color:#17103d;border-color:#17103d}
+.hero-art{background:linear-gradient(135deg,#2a1a7a 0%,#4a1fd6 55%,#7a1fb8 100%)}
+body.dark .hero{border-color:transparent}body.dark .hero h1{color:#fff}body.dark .hero h1 em{background:none;color:#ffd45e;-webkit-text-fill-color:#ffd45e}body.dark .hero p{color:#f3efff}body.dark .hero-pill{background:#ffffff2e}body.dark .hero .btn.white{background:#ffd45e;color:#17103d;box-shadow:none}body.dark .hero .btn.glass{border-color:transparent}
+.hero-art .plot text[style]{font-size:20px!important}.hero-art .plot text{font-size:13px}
