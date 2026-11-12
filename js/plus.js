@@ -188,8 +188,7 @@ const COMICS = {
     p: [['Кофе только что налили: $90^\\circ$. В комнате $20^\\circ$. Вы отвлеклись на телефон.', 'Кофе жаңа ғана құйылды: $90^\\circ$. Бөлмеде $20^\\circ$. Сіз телефонға алаңдадыңыз.', 'Fresh coffee: $90^\\circ$. The room is at $20^\\circ$. You got distracted by your phone.'], ['Чем горячее чашка по сравнению с комнатой, тем быстрее она остывает: $T\'=-k(T-20)$. Сначала температура падает быстро, потом всё медленнее.', 'Шыныаяқ бөлмеден неғұрлым ыстық болса, соғұрлым жылдам салқындайды: $T\'=-k(T-20)$. Алдымен температура тез түседі, сосын баяулай береді.', 'The hotter the cup compared with the room, the faster it cools: $T\'=-k(T-20)$. The temperature drops quickly at first, then slower and slower.'], ['Решение — экспонента: $T=20+70e^{-kt}$. До комнатной температуры кофе не остынет «никогда», но невкусным станет уже минут через двадцать. Уравнение знало это заранее.', 'Шешімі — экспонента: $T=20+70e^{-kt}$. Кофе бөлме температурасына «ешқашан» жетпейді, бірақ жиырма минуттан кейін-ақ дәмсіз болады. Теңдеу мұны алдын ала білген.', 'The solution is an exponential: $T=20+70e^{-kt}$. The coffee "never" reaches room temperature, but it is unpleasant after twenty minutes. The equation knew it in advance.']] }
 };
 const COMIC_AT = ['limit-point', 'sequence-limit', 'derivative-def', 'tangent', 'monotonicity', 'max-min', 'antiderivative', 'definite-integral', 'area', 'de-basics', 'de-applied'];
-const comicBlock = g => { const c = COMICS[g]; return `<figure class="comic"><figcaption><span class="pill g">${t('comicT')}</span> <b>${tr(c.t)}</b></figcaption><img src="assets/img/c-${g}.jpg" alt="${esc(tr(c.t))}" loading="lazy"><ol class="comic-cap">${c.p.map(x => `<li>${mx(tr(x))}</li>`).join('')}</ol><p class="small muted">${t('basedOn')}: ${tr(c.src)}</p></figure>`; };
-const comicHtml = tp => COMIC_AT.includes(tp.id) ? comicBlock(tp.g) : '';
+/* comicBlock, comicHtml — в js/comics.js (свой комикс у каждого урока) */
 const histOf = tp => { const list = HIST[tp.g], k = TOPICS.filter(x => x.g === tp.g).indexOf(tp); return list[k % list.length]; };
 const historyHtml = tp => `<div class="hist"><b>${t('histT')}</b><p>${mx(tr(histOf(tp)))}</p></div>`;
 
@@ -229,7 +228,7 @@ function readHtml(tp) {
 }
 function renderLibrary() {
   $('main').innerHTML = `<div class="page"><h1>${ico('lib')} ${t('library')}</h1><p class="muted">${t('libLead')}</p>
-  <h2>${t('libComics')}</h2><div class="stack">${GROUPS.map(g => `<div data-g="${g.id}" class="card">${comicBlock(g.id)}</div>`).join('')}</div>
+  <h2>${t('libComics')}</h2>${libComicsHtml()}
   <h2 style="margin-top:28px">${t('libHist')}</h2><div class="stack">${GROUPS.map(g => `<div data-g="${g.id}"><div class="group-head" style="margin-top:0"><span class="group-badge">${g.sym}</span><h3>${esc(groupName(g.id))}</h3></div>${HIST[g.id].map(h => `<div class="hist"><p>${mx(tr(h))}</p></div>`).join('')}</div>`).join('')}</div>
   <h2 style="margin-top:28px">${t('libBooks')}</h2><div class="grid2 lib-grid">${BOOKS.map(bookCard).join('')}</div>
   <h2 style="margin-top:28px">${t('libWeb')}</h2><div class="grid2 lib-grid">${WEB.map(w => `<div class="card book"><h3>${tr(w[1])}</h3><p>${tr(w[2])}</p><a class="btn sm soft" target="_blank" rel="noopener" href="${w[0]}">${t('openLink')} ↗</a></div>`).join('')}</div>
@@ -315,7 +314,7 @@ buildSlides = function (tp) {
   const out = _buildSlides(tp), c = C(tp.id), last = out.pop();
   const T = tp.g === 'lim' ? BLITZ_LIM : (tp.g === 'int' || tp.g === 'de' ? INT_T : DER_T), k0 = tp.n * 3, six = tp.g === 'lim' ? T : Array.from({ length: 6 }, (_, i) => T[(k0 + i * 7) % T.length]);
   const warm = `<span class="sl-kicker">${t('slWarm')}</span><p class="muted">${t('slWarmTip')}</p><div class="sl-formulas warm">${six.map(p => `<div class="f">${tex(fx(p[0] + R`=\ ?`), true)}</div>`).join('')}</div><details class="solution"><summary>${ico('bulb')} ${t('slAnswers')}</summary><div class="sl-formulas warm" style="padding:14px">${six.map(p => `<div class="f">${tex(fx(p[0] + '=' + p[1]), true)}</div>`).join('')}</div></details>`;
-  const head = [warm]; if (COMIC_AT.includes(tp.id)) head.push(comicBlock(tp.g));
+  const head = [warm]; if (COMIX[tp.id] && COMIX[tp.id].img) head.push(comicBlock(tp.id));
   head.push(`<div class="sl-pic"><div><span class="sl-kicker">${t('histT')}</span><div class="sl-hist">${mx(tr(histOf(tp)))}</div></div><img src="${groupPic(tp.g)}" alt=""></div>`);
   out.splice(2, 0, ...head);
   if (typeof DETAIL !== 'undefined' && DETAIL[tp.id]) out.push(`<span class="sl-kicker">${t('detailT')}</span>${detailHtml(tp.id, true)}`);
