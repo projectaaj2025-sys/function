@@ -250,7 +250,7 @@ ol.sol-air>li::before{content:counter(sa);position:absolute;left:14px;top:15px;w
 .hero-art{background:linear-gradient(135deg,#2a1a7a 0%,#4a1fd6 55%,#7a1fb8 100%)}
 body.dark .hero{border-color:transparent}body.dark .hero h1{color:#fff}body.dark .hero h1 em{background:none;color:#ffd45e;-webkit-text-fill-color:#ffd45e}body.dark .hero p{color:#f3efff}body.dark .hero-pill{background:#ffffff2e}body.dark .hero .btn.white{background:#ffd45e;color:#17103d;box-shadow:none}body.dark .hero .btn.glass{border-color:transparent}
 .hero-art .plot text[style]{font-size:20px!important}.hero-art .plot text{font-size:13px}
-/* ---------- раунд 10: замена задачи в рабочем листе, печать комикса и слайдов ---------- */
+/* ---------- раунд 10: замена задачи в рабочем листе, печать комиксов ---------- */
 .ws-tasks>li{position:relative}.ws-swap{position:absolute;right:0;top:-6px;display:flex;gap:6px;opacity:0;transition:opacity .15s}.ws-tasks>li:hover .ws-swap,.ws-swap:focus-within{opacity:1}
 .ws-swap button{font:inherit;font-size:12.5px;font-weight:700;padding:4px 9px;border-radius:999px;border:1px solid #c9c2e8;background:#f3f0ff;color:#3b1fa8;cursor:pointer;display:inline-flex;align-items:center;gap:4px}.ws-swap button:hover{background:#e4dcff}.ws-swap svg{width:13px;height:13px}
 @media(hover:none){.ws-swap{position:static;opacity:1;margin-bottom:6px}}
@@ -259,10 +259,7 @@ body.dark .hero{border-color:transparent}body.dark .hero h1{color:#fff}body.dark
 #print-root{display:none}
 @media print{
  body.pr-on>*:not(#print-root){display:none!important}body.pr-on{background:#fff}body.pr-on #print-root{display:block;color:#111}
- .pr-slide{break-after:page;break-inside:avoid;display:flex;flex-direction:column;min-height:180mm}.pr-slide:last-child{break-after:auto}
- .pr-slide>.slide{padding:0;min-height:0;overflow:visible;animation:none;flex:1;font-size:17px;zoom:.86}.pr-slide>.slide h2{font-size:28px}
- .pr-slide footer{display:flex;justify-content:space-between;border-top:1px solid #bbb;padding-top:4px;font-size:11px;color:#555}
- .pr-slide summary{list-style:none;font-weight:800;margin-top:8px}.pr-slide img{max-height:120mm;object-fit:contain}.pr-slide .sl-pic img{max-width:38%}
- .pr-comic h1{margin:0 0 10px;font-size:26px}.pr-kicker{margin:0;font-size:13px;color:#555;text-transform:uppercase;letter-spacing:.06em}.pr-comic img{max-width:100%;max-height:112mm;width:auto;margin:0 auto;border:2px solid #111;border-radius:10px;display:block}
+ .pr-comic{break-after:page;break-inside:avoid}.pr-comic:last-child{break-after:auto}
+ .pr-comic h1{margin:0 0 10px;font-size:26px}.pr-kicker{margin:0;font-size:13px;color:#555;text-transform:uppercase;letter-spacing:.06em}.pr-comic img{max-width:100%;max-height:100mm;width:auto;margin:0 auto;border:2px solid #111;border-radius:10px;display:block}
  .pr-comic .comic-cap{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;list-style:none;padding:0;margin:12px 0 8px;font-size:14px}.pr-comic .comic-cap li{border:1px solid #bbb;border-radius:8px;padding:8px 10px;background:#fff}
 }

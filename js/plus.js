@@ -232,7 +232,7 @@ function readHtml(tp) {
 }
 function renderLibrary() {
   $('main').innerHTML = `<div class="page"><h1>${ico('lib')} ${t('library')}</h1><p class="muted">${t('libLead')}</p>
-  <h2>${t('libComics')}</h2>${libComicsHtml()}
+  <div class="between wrap" style="gap:10px"><h2 style="margin:0">${t('libComics')}</h2><button class="btn primary no-print" onclick="comicsPrintAll()">${ico('table')} ${tr(['Скачать все комиксы одним PDF', 'Барлық комиксті бір PDF-пен жүктеу', 'Download all comics as one PDF'])}</button></div><p class="muted small no-print" style="margin:6px 0 10px">${tr(['Откроется окно печати — выберите «Сохранить как PDF». Получится ' + Object.keys(COMIX).length + ' альбомных листов, по комиксу на лист.', 'Басып шығару терезесі ашылады — «PDF ретінде сақтау» дегенді таңдаңыз. ' + Object.keys(COMIX).length + ' альбомдық парақ шығады, әр параққа бір комикс.', 'The print dialog opens — choose "Save as PDF". You get ' + Object.keys(COMIX).length + ' landscape pages, one comic per page.'])}</p>${libComicsHtml()}
   <h2 style="margin-top:28px">${t('libHist')}</h2><div class="stack">${GROUPS.map(g => `<div data-g="${g.id}"><div class="group-head" style="margin-top:0"><span class="group-badge">${g.sym}</span><h3>${esc(groupName(g.id))}</h3></div>${HIST[g.id].map(h => `<div class="hist"><p>${mx(tr(h))}</p></div>`).join('')}</div>`).join('')}</div>
   <h2 style="margin-top:28px">${t('libBooks')}</h2><div class="grid2 lib-grid">${BOOKS.map(bookCard).join('')}</div>
   <h2 style="margin-top:28px">${t('libWeb')}</h2><div class="grid2 lib-grid">${WEB.map(w => `<div class="card book"><h3>${tr(w[1])}</h3><p>${tr(w[2])}</p><a class="btn sm soft" target="_blank" rel="noopener" href="${w[0]}">${t('openLink')} ↗</a></div>`).join('')}</div>
@@ -1341,7 +1341,7 @@ adv('harmonic', r => { const [a, b, amp] = r.pick([[3, 4, 5], [6, 8, 10], [5, 12
     steps: [T3(R`$\omega^2=${w * w}$, $\omega=${w}$. Общее решение: $x=C_1\cos ${w}t+C_2\sin ${w}t$.`, R`$\omega^2=${w * w}$, $\omega=${w}$. Жалпы шешім: $x=C_1\cos ${w}t+C_2\sin ${w}t$.`, R`$\omega^2=${w * w}$, $\omega=${w}$. General solution: $x=C_1\cos ${w}t+C_2\sin ${w}t$.`),
       R`$x(0)=C_1=${a}$; $x'(0)=${w}C_2=${b * w}$, $C_2=${b}$.`, R`${W.so}: $A=\sqrt{${a}^2+${b}^2}=${amp}$.`] }; });
 
-/* ---------- 5.4. Печать в PDF: комикс одним листом и все слайды урока одним файлом ---------- */
+/* ---------- 5.4. Печать в PDF: один комикс или все комиксы курса одним файлом ---------- */
 function printDoc(html, landscape) {
   let root = $('print-root'); if (!root) { root = document.createElement('div'); root.id = 'print-root'; document.body.appendChild(root); }
   let st = $('print-page'); if (!st) { st = document.createElement('style'); st.id = 'print-page'; document.head.appendChild(st); }
@@ -1354,17 +1354,12 @@ function printDoc(html, landscape) {
   const done = () => { document.body.classList.remove('pr-on'); document.body.classList.toggle('dark', dark); root.innerHTML = ''; st.textContent = ''; window.removeEventListener('afterprint', done); };
   window.addEventListener('afterprint', done);
   const imgs = [...root.querySelectorAll('img')].filter(im => !im.complete).map(im => new Promise(res => { im.onload = im.onerror = res; }));
-  return Promise.race([Promise.all(imgs), new Promise(res => setTimeout(res, 4000))]).then(() => { window.print(); });
+  return Promise.race([Promise.all(imgs), new Promise(res => setTimeout(res, 15000))]).then(() => { window.print(); });
 }
-function comicPrint(id) {
-  const c = COMIX[id]; if (!c) return;
-  const src = c.img === 1 ? 'k-' + id : c.img;
-  return printDoc(`<section class="pr-comic"><p class="pr-kicker">${esc(C(id).t)}</p><h1>${tr(c.t)}</h1><img src="assets/img/${src}.jpg" alt=""><ol class="comic-cap">${c.p.map(x => `<li>${mx(tr(x))}</li>`).join('')}</ol><p class="small">${t('comicSrc')}: ${tr(c.src)}</p></section>`, true);
-}
-function slidesPrint(id) {
-  const tp = topicById(id), deck = buildSlides(tp), n = deck.length;
-  return printDoc(deck.map((h, i) => `<section class="pr-slide"><div class="slide">${h}</div><footer><span>${esc(C(id).t)}</span><span>${i + 1} / ${n}</span></footer></section>`).join(''), true);
-}
+function comicPrint(id) { if (COMIX[id]) return printDoc(comicPage(id), true); }
+const comicPage = id => { const c = COMIX[id], src = c.img === 1 ? 'k-' + id : c.img; return `<section class="pr-comic"><p class="pr-kicker">${esc(C(id).t)}</p><h1>${tr(c.t)}</h1>${src ? `<img src="assets/img/${src}.jpg" alt="">` : ''}<ol class="comic-cap">${c.p.map(x => `<li>${mx(tr(x))}</li>`).join('')}</ol><p class="small">${t('comicSrc')}: ${tr(c.src)}</p></section>`; };
+/* все комиксы курса одним PDF: по одному альбомному листу на урок, в порядке тем */
+function comicsPrintAll() { return printDoc(TOPICS.filter(tp => COMIX[tp.id]).map(tp => comicPage(tp.id)).join(''), true); }
 
 /* ---------- 5.5. Весь сайт одним HTML-файлом для работы без интернета ---------- */
 function offImages() {
