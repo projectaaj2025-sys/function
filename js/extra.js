@@ -277,7 +277,7 @@ function slideFull() { const d = $('deck'); if (document.fullscreenElement) docu
 function renderSlides(tp, panel) {
   slideDeck = buildSlides(tp);
   panel.innerHTML = `<div class="deck" id="deck" data-g="${tp.g}"><div class="track"><div class="fill" id="slide-fill"></div></div><div class="slide" id="slide-body"></div>
-  <div class="deck-bar"><button class="btn" id="slide-prev" onclick="slideShow('${tp.id}',(slideAt['${tp.id}']||0)-1)">${ico('left')} ${t('slPrev')}</button><b id="slide-n"></b><span class="muted small grow deck-hint">${t('slHint')}</span><button class="btn ghost" onclick="slideFull()" title="${t('slFull')}">${ico('full')} <span class="deck-hint">${t('slFull')}</span></button><button class="btn primary" id="slide-next" onclick="slideShow('${tp.id}',(slideAt['${tp.id}']||0)+1)">${t('slNext')} ${ico('arrow')}</button></div></div>`;
+  <div class="deck-bar"><button class="btn" id="slide-prev" onclick="slideShow('${tp.id}',(slideAt['${tp.id}']||0)-1)">${ico('left')} ${t('slPrev')}</button><b id="slide-n"></b><span class="muted small grow deck-hint">${t('slHint')}</span><button class="btn ghost" onclick="slidesPrint('${tp.id}')" title="${t('print')}">${ico('table')} <span class="deck-hint">PDF</span></button><button class="btn ghost" onclick="slideFull()" title="${t('slFull')}">${ico('full')} <span class="deck-hint">${t('slFull')}</span></button><button class="btn primary" id="slide-next" onclick="slideShow('${tp.id}',(slideAt['${tp.id}']||0)+1)">${t('slNext')} ${ico('arrow')}</button></div></div>`;
   slideShow(tp.id, slideAt[tp.id] || 0);
 }
 document.addEventListener('keydown', e => {
